@@ -9,6 +9,9 @@ Route::get('me', 'User\MeController@getMe');
 // 認証済みユーザーのみのRoute group
 Route::group(['middleware' => ['auth:api']], function(){
     Route::post('logout', 'Auth\LoginController@logout');
+
+    Route::put('settings/profile', 'User\SettingsController@updateProfile');
+    Route::put('settings/password', 'User\SettingsController@updatePassword');
 });
 
 // guestのみのRoute
@@ -19,4 +22,6 @@ Route::group(['middleware' => ['guest:api']], function(){
     Route::post('login', 'Auth\LoginController@login');
     Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
     Route::post('password/reset', 'Auth\ResetPasswordController@reset');
+
+
 });
