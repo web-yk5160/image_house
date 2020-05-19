@@ -61,11 +61,16 @@ class Handler extends ExceptionHandler
             }
         }
 
-        if ($exception instanceof ModelNotFoundException) {
+        if($exception instanceof ModelNotFoundException && $request->expectsJson()){
             return response()->json(["errors" => [
                 "message" => "リソースが見つかりませんでした"
             ]], 404);
+        }
 
+        if ($exception instanceof ModelNotDefined  && $request->expectsJson()) {
+            return response()->json(["errors" => [
+                "message" => "モデルが定義されていません"
+            ]], 500);
         }
 
         return parent::render($request, $exception);

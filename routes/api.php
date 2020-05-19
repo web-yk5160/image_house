@@ -6,6 +6,13 @@ use Illuminate\Support\Facades\Route;
 // Public Route
 Route::get('me', 'User\MeController@getMe');
 
+// Design取得
+Route::get('designs', 'Designs\DesignController@index');
+Route::get('designs/{id}', 'Designs\DesignController@findDesign');
+
+// User取得
+Route::get('users', 'User\UserController@index');
+
 // 認証済みユーザーのみのRoute group
 Route::group(['middleware' => ['auth:api']], function(){
     Route::post('logout', 'Auth\LoginController@logout');
