@@ -13,7 +13,8 @@ use Illuminate\Support\Facades\Log;
 
 class Design extends Model
 {
-    use Taggable;
+    use Taggable, Likeable;
+
     protected $fillable = [
         'user_id',
         'image',
