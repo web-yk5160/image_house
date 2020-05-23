@@ -12,14 +12,20 @@ class DesignRepository extends BaseRepository implements IDesign
     return Design::class; // 'App\Models\Design'
   }
 
-  public function allLive()
-  {
-    return $this->model->where('is_live', true)->get();
-  }
-
   public function applyTags($id, array $data)
   {
     $design = $this->find($id);
     $design->retag($data);
+  }
+
+  public function addComment($designId, array $data)
+  {
+    // コメントを作成したいデザインを取得する
+    $design = $this->find($designId);
+
+    // デザインのコメントを作成する
+    $comment = $design->comments()->create($data);
+
+    return $comment;
   }
 }
