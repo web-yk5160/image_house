@@ -7,13 +7,21 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TeamResource;
 use App\Repositories\Contracts\ITeam;
+use App\Repositories\Contracts\IUser;
+use App\Repositories\Contracts\IInvitation;
 
 class TeamsController extends Controller
 {
     protected $teams;
-    public function __construct(ITeam $teams)
+    protected $users;
+    protected $invitations;
+
+    public function __construct(ITeam $teams,
+    IUser $users, IInvitation $invitations)
     {
         $this->teams = $teams;
+        $this->users = $users;
+        $this->invitations = $invitations;
     }
 
     /**
@@ -103,7 +111,32 @@ class TeamsController extends Controller
 
         $team->delete();
 
-        return response()->json(['message' => 'Deleted'], 200);
+        return response()->json(['message' => '削除しました'], 200);
+    }
+
+    public function removeFromTeam($teamId, $userId)
+    {
+        // teamを取得
+        $team = $this->teams->find($teamId);
+        $user = $this->users->find($userId);
+
+        // ユーザーがオーナーではないか確認
+        if($user->isOwnerOfTeam($team)) {
+            return response()->json([
+                'message' => 'あなたはチームのオーナーです'
+            ], 401);
+        }
+
+        // リクエストを送信した人がチームの所有者であるか、
+        // チームを離れたい人であることを確認
+        if(!auth()->user()->isOwnerOfTeam($team) && auth()->id() !== $user->id) {
+            return response()->json([
+                'message' => '権限がありません'
+            ], 401);
+        }
+
+        $this->invitations->removeUserFromTeam($team, $userId);
+        return response()->json(['message' => 'チームから削除しました'], 200);
     }
 
 }

@@ -94,6 +94,12 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
                 ->count();
     }
 
+    // invitationsのリレーション
+    public function invitations()
+    {
+        $this->hasMany(Invitation::class, 'recipient_email', 'email');
+    }
+
 
     use Notifiable;
 
