@@ -15,6 +15,10 @@ Route::get('users', 'User\UserController@index');
 
 Route::get('teams/slug/{slug}', 'Teams\TeamsController@findBySlug');
 
+// Design検索
+Route::get('search/designs', 'Designs\DesignController@search');
+Route::get('search/designers', 'User\UserController@search');
+
 // 認証済みユーザーのみのRoute group
 Route::group(['middleware' => ['auth:api']], function(){
     Route::post('logout', 'Auth\LoginController@logout');
